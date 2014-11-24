@@ -1,37 +1,72 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity$PlaceholderFragment"
-    android:id="@+id/swiper">
+    tools:context=".MainActivity$PlaceholderFragment">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/up"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="@string/up"
-        android:textColor="#000"
-        android:textSize="72sp"
-        android:gravity="center"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
 
-    <Button
-        android:id="@+id/down"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="@string/down"
-        android:textColor="#000"
-        android:textSize="72sp"
-        android:gravity="center"/>
+            <ImageView
+                android:id="@+id/upHighlight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@color/highlight"
+                android:visibility="invisible" />
 
+            <Button
+                android:id="@+id/up"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@color/colorPrimary"
+                android:text="@string/up"
+                android:textColor="#fff"
+                android:textSize="72sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/downHighlight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@color/highlight"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/down"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@color/colorPrimary"
+                android:text="@string/down"
+                android:textColor="#fff"
+                android:textSize="72sp" />
+        </RelativeLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

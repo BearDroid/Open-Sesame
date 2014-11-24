@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
@@ -18,10 +19,13 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private boolean garageTransition;
     private Button garageUp;
     private Button garageDown;
+    private ImageView upHighlight;
+    private ImageView downHighlight;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        checkStatus(view); //when the view is created, it will check boolean garageOpen to highlight appropriate button
         //swipe to refresh
         mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swiper);
         mSwipeRefresh.setOnRefreshListener(this);
@@ -48,7 +52,7 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
         mSwipeRefresh.setRefreshing(false);
     }
     public void closeGarage(){
@@ -58,6 +62,7 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
             garageOpen = false;
             Toast.makeText(getActivity(), "Garage is closing now...", Toast.LENGTH_SHORT).show();
         }
+        checkStatus(getView());
     }
     public void openGarage(){
         if(garageOpen){
@@ -65,6 +70,19 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
         } else if (!garageOpen){
             garageOpen = true;
             Toast.makeText(getActivity(), "Garage is opening now...", Toast.LENGTH_SHORT).show();
+        }
+        checkStatus(getView());
+    }
+    public void checkStatus(View view){
+        upHighlight = (ImageView) view.findViewById(R.id.upHighlight);
+        downHighlight = (ImageView) view.findViewById(R.id.downHighlight);
+        if(garageOpen){
+            upHighlight.setVisibility(View.VISIBLE);
+            downHighlight.setVisibility(View.INVISIBLE);
+        }
+        if (!garageOpen){
+            downHighlight.setVisibility(View.VISIBLE);
+            upHighlight.setVisibility(View.INVISIBLE);
         }
     }
 }

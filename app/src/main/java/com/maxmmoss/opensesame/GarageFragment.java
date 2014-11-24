@@ -1,6 +1,7 @@
 package com.maxmmoss.opensesame;
 
 import android.app.Fragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -10,12 +11,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
+
 /**
  * Created by Max on 11/12/2014.
  */
 public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private SwipeRefreshLayout mSwipeRefresh;
-    private boolean garageOpen;
+    private boolean garageOpen = false;
     private boolean garageTransition;
     private Button garageUp;
     private Button garageDown;
@@ -53,6 +59,7 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
+        checkStatus(getView());
         mSwipeRefresh.setRefreshing(false);
     }
     public void closeGarage(){
@@ -74,6 +81,8 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
         checkStatus(getView());
     }
     public void checkStatus(View view){
+        readWebsite task = new readWebsite();
+        task.execute(new String ("http://www.maxmmoss.com/Opensesame"));
         upHighlight = (ImageView) view.findViewById(R.id.upHighlight);
         downHighlight = (ImageView) view.findViewById(R.id.downHighlight);
         if(garageOpen){
@@ -85,4 +94,55 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
             upHighlight.setVisibility(View.INVISIBLE);
         }
     }
+
+    private class readWebsite extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            Document document = null;
+            try {
+                document = Jsoup.connect("http://maxmmoss.com/Opensesame/").get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String status = document.select("#status").first().text();
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
+    /**
+    private Class readWebsite extends AsyncTask<String, Void, Void>{
+        protected String doInBackground
+        /** manually done
+        URL url = new URL("http://maxmmoss.com/Opensesame");
+        BufferedReader reader = null;
+        StringBuilder builder = new StringBuilder();
+        try {
+            reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            for (String line; (line = reader.readLine()) != null;) {
+                builder.append(line.trim());
+            }
+        } finally {
+            if (reader != null) try { reader.close(); } catch (IOException logOrIgnore) {}
+        }
+        String start = "<p id=\"status\">";
+        String end = "</p>";
+        String part = builder.substring(builder.indexOf(start) + start.length());
+        String status = part.substring(0, part.indexOf(end));
+
+        Document document = Jsoup.connect("http://maxmmoss.com/Opensesame/").get();
+        String status = document.select("status").first().text();
+
+        Boolean garageIsOpen = null;
+        if (status == "Open"){
+            garageIsOpen = true;
+        } else if(status == "Closed"){
+            garageIsOpen = false;
+        }
+        return garageIsOpen;
+
+    }**/
 }

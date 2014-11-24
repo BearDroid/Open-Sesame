@@ -6,4 +6,5 @@
     <color name="drawerBackground">#F2F2F2</color>
     <color name="white">#fff</color>
     <color name="highlight">#33FFFF</color>
+    <color name="black">#000</color>
 </resources>

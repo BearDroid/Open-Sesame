@@ -39,7 +39,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private int mCurrentSelectedPosition;
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

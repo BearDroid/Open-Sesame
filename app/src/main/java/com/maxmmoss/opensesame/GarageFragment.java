@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 
@@ -59,7 +60,7 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_SHORT).show();
         checkStatus(getView());
         mSwipeRefresh.setRefreshing(false);
     }
@@ -68,7 +69,8 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
         if (!garageOpen) {
             Toast.makeText(getActivity(), "Garage is closed already", Toast.LENGTH_SHORT).show();
         } else if (garageOpen) {
-            garageOpen = false;
+            updateWebpage task = new updateWebpage();
+            task.execute(false);
             Toast.makeText(getActivity(), "Garage is closing now...", Toast.LENGTH_SHORT).show();
         }
         checkStatus(getView());
@@ -78,7 +80,8 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
         if (garageOpen) {
             Toast.makeText(getActivity(), "Garage is open already", Toast.LENGTH_SHORT).show();
         } else if (!garageOpen) {
-            garageOpen = true;
+            updateWebpage task = new updateWebpage();
+            task.execute(true);
             Toast.makeText(getActivity(), "Garage is opening now...", Toast.LENGTH_SHORT).show();
         }
         checkStatus(getView());
@@ -124,6 +127,26 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
             updateUI(getView());
 
+        }
+    }
+
+    public class updateWebpage extends AsyncTask<Boolean, Void, Void> {
+        //none of this works
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            Document document = null;
+            try {
+                document = Jsoup.connect("http://maxmmoss.com/Opensesame/").get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Element p = document.select("#status").first();
+            if (params[0]) {
+                p.text("Open");
+            } else if (!params[0]) {
+                p.text("Closed");
+            }
+            return null;
         }
     }
 

@@ -19,9 +19,9 @@ import java.io.IOException;
 /**
  * Created by Max on 11/12/2014.
  */
-public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout mSwipeRefresh;
-    private boolean garageOpen = false;
+    private boolean garageOpen;
     private boolean garageTransition;
     private Button garageUp;
     private Button garageDown;
@@ -32,6 +32,7 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         checkStatus(view); //when the view is created, it will check boolean garageOpen to highlight appropriate button
+
         //swipe to refresh
         mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swiper);
         mSwipeRefresh.setOnRefreshListener(this);
@@ -62,42 +63,48 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
         checkStatus(getView());
         mSwipeRefresh.setRefreshing(false);
     }
-    public void closeGarage(){
-        if(!garageOpen){
+
+    public void closeGarage() {
+        if (!garageOpen) {
             Toast.makeText(getActivity(), "Garage is closed already", Toast.LENGTH_SHORT).show();
-        } else if(garageOpen){
+        } else if (garageOpen) {
             garageOpen = false;
             Toast.makeText(getActivity(), "Garage is closing now...", Toast.LENGTH_SHORT).show();
         }
         checkStatus(getView());
     }
-    public void openGarage(){
-        if(garageOpen){
+
+    public void openGarage() {
+        if (garageOpen) {
             Toast.makeText(getActivity(), "Garage is open already", Toast.LENGTH_SHORT).show();
-        } else if (!garageOpen){
+        } else if (!garageOpen) {
             garageOpen = true;
             Toast.makeText(getActivity(), "Garage is opening now...", Toast.LENGTH_SHORT).show();
         }
         checkStatus(getView());
     }
-    public void checkStatus(View view){
+
+    public void checkStatus(View view) {
         readWebsite task = new readWebsite();
-        task.execute(new String ("http://www.maxmmoss.com/Opensesame"));
+        task.execute();
+    }
+
+    public void updateUI(View view) {
         upHighlight = (ImageView) view.findViewById(R.id.upHighlight);
         downHighlight = (ImageView) view.findViewById(R.id.downHighlight);
-        if(garageOpen){
+        if (garageOpen) {
             upHighlight.setVisibility(View.VISIBLE);
             downHighlight.setVisibility(View.INVISIBLE);
         }
-        if (!garageOpen){
+        if (!garageOpen) {
             downHighlight.setVisibility(View.VISIBLE);
             upHighlight.setVisibility(View.INVISIBLE);
         }
     }
 
-    private class readWebsite extends AsyncTask<String, Void, String> {
+    private class readWebsite extends AsyncTask<Void, Void, String> {
         @Override
-        protected String doInBackground(String... urls) {
+        protected String doInBackground(Void... params) {
             Document document = null;
             try {
                 document = Jsoup.connect("http://maxmmoss.com/Opensesame/").get();
@@ -110,39 +117,19 @@ public class GarageFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         @Override
         protected void onPostExecute(String result) {
+            if (result.equals("Open")) {
+                garageOpen = true;
+            } else if (result.equals("Closed")) {
+                garageOpen = false;
+            }
+            updateUI(getView());
 
         }
     }
-    /**
-    private Class readWebsite extends AsyncTask<String, Void, Void>{
-        protected String doInBackground
-        /** manually done
-        URL url = new URL("http://maxmmoss.com/Opensesame");
-        BufferedReader reader = null;
-        StringBuilder builder = new StringBuilder();
-        try {
-            reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-            for (String line; (line = reader.readLine()) != null;) {
-                builder.append(line.trim());
-            }
-        } finally {
-            if (reader != null) try { reader.close(); } catch (IOException logOrIgnore) {}
-        }
-        String start = "<p id=\"status\">";
-        String end = "</p>";
-        String part = builder.substring(builder.indexOf(start) + start.length());
-        String status = part.substring(0, part.indexOf(end));
 
-        Document document = Jsoup.connect("http://maxmmoss.com/Opensesame/").get();
-        String status = document.select("status").first().text();
-
-        Boolean garageIsOpen = null;
-        if (status == "Open"){
-            garageIsOpen = true;
-        } else if(status == "Closed"){
-            garageIsOpen = false;
-        }
-        return garageIsOpen;
-
-    }**/
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkStatus(getView());
+    }
 }
